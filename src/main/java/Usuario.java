@@ -1,4 +1,4 @@
-// CLASE Usuario: Representa un usuario de la biblioteca con un nombre.
+// usuario de la biblioteca.
 class Usuario {
     private String nombre;
 

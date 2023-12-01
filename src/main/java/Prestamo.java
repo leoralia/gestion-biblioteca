@@ -1,6 +1,6 @@
 import java.time.LocalDate;
 
-// CLASE Prestamo: Representa un préstamo de un libro a un usuario.
+// préstamo de un libro a un usuario.
 class Prestamo {
     private Libro libro;
     private Usuario usuario;
@@ -33,3 +33,4 @@ class Prestamo {
         this.fechaDevolucion = fechaDevolucion;
     }
 }
+

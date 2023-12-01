@@ -1,4 +1,4 @@
-// CLASE Libro: Representa un libro con título y autor.
+//libro con título y autor.
 class Libro {
     private String titulo;
     private String autor;

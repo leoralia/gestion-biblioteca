@@ -1,3 +1,7 @@
+/*escribir html - errotes (opciones) - escribir en consola y archivo - 
+manejo fechas - fecha "string a objetos" - mantener las clases - lista de las 
+clases - recibir datos
+*/
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -18,13 +22,11 @@ public class Test {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            mostrarLibros();
 
             System.out.println("\n=== Menú ===");
             System.out.println("1. Registrar Préstamo");
-            System.out.println("2. Generar Reporte");
-            System.out.println("3. Generar Reporte HTML");
-            System.out.println("4. Salir");
+            System.out.println("2. Generar Reporte HTML");
+            System.out.println("3. Salir");
 
             int opcion = scanner.nextInt();
             scanner.nextLine(); // Consumir la nueva línea pendiente
@@ -34,12 +36,9 @@ public class Test {
                     registrarPrestamo(scanner);
                     break;
                 case 2:
-                    generarReporte();
-                    break;
-                case 3:
                     generarReporteHTML();
                     break;
-                case 4:
+                case 3:
                     System.out.println("¡Hasta luego!");
                     System.exit(0);
                 default:
@@ -48,14 +47,22 @@ public class Test {
         }
     }
 
-    // Método para inicializar la lista de libros
+    // Método - lista de libros - Libro.java
     private static void inicializarLibros() {
-        listaLibros.add(new Libro("Java Programming", "John Doe"));
-        listaLibros.add(new Libro("Python Basics", "Jane Smith"));
-        listaLibros.add(new Libro("Web Development", "Sam Johnson"));
+        listaLibros.add(new Libro("Cien años de soledad", "Gabriel García Márquez"));
+        listaLibros.add(new Libro("Don Quijote de la Mancha", "Miguel de Cervantes Saavedra"));
+        listaLibros.add(new Libro("La sombra del viento", "Carlos Ruiz Zafón"));
+        listaLibros.add(new Libro("Como agua para chocolate", "Laura Esquivel"));
+        listaLibros.add(new Libro("Rayuela", "Julio Cortázar"));
+        listaLibros.add(new Libro("Crónica de una muerte anunciada", "Gabriel García Márquez"));
+        listaLibros.add(new Libro("Ficciones", "Jorge Luis Borges"));
+        listaLibros.add(new Libro("La casa de los espíritus", "Isabel Allende"));
+        listaLibros.add(new Libro("Pedro Páramo", "Juan Rulfo"));
+        listaLibros.add(new Libro("Aura", "Carlos Fuentes"));
+
     }
 
-    // Método para mostrar la lista de libros
+    // Metodo - mostrar libros
     private static void mostrarLibros() {
         System.out.println("\n=== Lista de Libros ===");
         for (int i = 0; i < listaLibros.size(); i++) {
@@ -63,40 +70,63 @@ public class Test {
         }
     }
 
-    // Método para registrar un préstamo
-    private static void registrarPrestamo(Scanner scanner) {
+    // Método - registro prestamo
+private static void registrarPrestamo(Scanner scanner) {
         System.out.println("=== Registrar Préstamo ===");
 
         System.out.println("Ingrese el nombre del usuario:");
         String nombreUsuario = scanner.nextLine();
 
-        System.out.println("Ingrese el número del libro a prestar:");
-        int indiceLibro = scanner.nextInt();
-        scanner.nextLine(); // Consumir la nueva línea pendiente
+        System.out.println("Ingrese el número del libro a prestar (ingrese '0' para finalizar):");
 
-        // Obtener el libro y el usuario seleccionados
-        Libro libroSeleccionado = listaLibros.get(indiceLibro - 1);
+        // Mostrar libros
+        mostrarLibros();
+
+        List<Libro> librosSeleccionados = new ArrayList<>();
+
+        while (true) {
+            int indiceLibro = scanner.nextInt();
+            scanner.nextLine();
+
+            if (indiceLibro == 0) {
+                break; // salida
+            }
+
+            if (indiceLibro < 1 || indiceLibro > listaLibros.size()) {
+                System.out.println("Número de libro no válido. Inténtelo de nuevo.");
+            } else {
+                // libro seleccionado y agregardo a lista
+                Libro libroSeleccionado = listaLibros.get(indiceLibro - 1);
+                librosSeleccionados.add(libroSeleccionado);
+            }
+        }
+
+        // usuario seleccionado
         Usuario usuarioSeleccionado = obtenerUsuario(nombreUsuario);
 
-        // Obtener la fecha actual como fecha de préstamo
+        // fecha de préstamo - la actual
         LocalDate fechaPrestamo = LocalDate.now();
 
-        // Solicitar la fecha de devolución
+        // fecha de devolucion
         System.out.println("Ingrese la fecha de devolución (formato: dd/MM/yyyy):");
         String fechaDevolucionStr = scanner.nextLine();
         LocalDate fechaDevolucion = obtenerFecha(fechaDevolucionStr);
 
-        // Crear un nuevo préstamo
-        Prestamo prestamo = new Prestamo(libroSeleccionado, usuarioSeleccionado, fechaPrestamo);
-        prestamo.setFechaDevolucion(fechaDevolucion);
+        // Crear un nuevo prestamo para cada libro seleccionado
+        for (Libro libro : librosSeleccionados) {
+            // Crear un nuevo préstamo
+            Prestamo prestamo = new Prestamo(libro, usuarioSeleccionado, fechaPrestamo);
+            prestamo.setFechaDevolucion(fechaDevolucion);
 
-        // Agregar el préstamo a la lista de préstamos
-        listaPrestamos.add(prestamo);
+            // Agregar el préstamo a la lista 
+            listaPrestamos.add(prestamo);
+        }
 
         System.out.println("Préstamo registrado con éxito.");
-    }
-
-    // Método para obtener un usuario existente o crear uno nuevo
+}
+    
+    //
+    // Método - usuario
     private static Usuario obtenerUsuario(String nombreUsuario) {
         for (Usuario usuario : listaUsuarios) {
             if (usuario.getNombre().equalsIgnoreCase(nombreUsuario)) {
@@ -110,48 +140,37 @@ public class Test {
         return nuevoUsuario;
     }
 
-    // Método para obtener una fecha a partir de una cadena
+    // Método - string a fecha
     private static LocalDate obtenerFecha(String fechaStr) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return LocalDate.parse(fechaStr, formatter);
     }
 
-    // Método para generar un informe en consola
-    private static void generarReporte() {
-        System.out.println("\n=== Reporte de Préstamos ===");
-        for (Prestamo prestamo : listaPrestamos) {
-            System.out.println("Libro: " + prestamo.getLibro().getTitulo());
-            System.out.println("Autor: " + prestamo.getLibro().getAutor());
-            System.out.println("Usuario: " + prestamo.getUsuario().getNombre());
-            System.out.println("Fecha de Préstamo: " + prestamo.getFechaPrestamo());
-            System.out.println("Fecha de Devolución: " + prestamo.getFechaDevolucion());
-            System.out.println("----------------------");
-        }
-    }
-
-    // Método para generar un informe HTML
+    // Método informe html
     private static void generarReporteHTML() {
         try (PrintWriter writer = new PrintWriter(new FileWriter("informe_prestamos.html"))) {
+            //tabla y estilo
             writer.println("<html>");
             writer.println("<head>");
-            writer.println("<title>Informe de Préstamos</title>");
+            writer.println("<title>Gestión de Biblioteca</title>");
             writer.println("<style>");
             writer.println("table { border-collapse: collapse; width: 100%; }");
             writer.println("th, td { border: 1px solid #dddddd; text-align: left; padding: 8px; }");
-            writer.println("th { background-color: #f2f2f2; }");
+            writer.println("th { background-color: #336699; color: #fff; }");
             writer.println("</style>");
             writer.println("</head>");
             writer.println("<body>");
-            writer.println("<h1>Informe de Préstamos</h1>");
+            writer.println("<h1>Gestión de Biblioteca</h1>");
 
             writer.println("<table>");
-            writer.println("<tr><th>Libro</th><th>Autor</th><th>Usuario</th><th>Fecha de Préstamo</th><th>Fecha de Devolución</th></tr>");
-
+            writer.println("<tr><th>Usuario</th><th>Libro</th><th>Autor</th><th>Fecha de Préstamo</th><th>Fecha de Devolución</th></tr>");
+            
+            // usuario-libro-autor-prestamo-devolucion - iterar
             for (Prestamo prestamo : listaPrestamos) {
                 writer.println("<tr>");
-                writer.println("<td>" + prestamo.getLibro().getTitulo() + "</td>");
-                writer.println("<td>" + prestamo.getLibro().getAutor() + "</td>");
                 writer.println("<td>" + prestamo.getUsuario().getNombre() + "</td>");
+                writer.println("<td>" + prestamo.getLibro().getTitulo() + "</td>");
+                writer.println("<td>" + prestamo.getLibro().getAutor() + "</td>");                
                 writer.println("<td>" + prestamo.getFechaPrestamo() + "</td>");
                 writer.println("<td>" + prestamo.getFechaDevolucion() + "</td>");
                 writer.println("</tr>");
@@ -162,7 +181,9 @@ public class Test {
             writer.println("</html>");
 
             System.out.println("Informe HTML generado con éxito.");
-        } catch (IOException e) {
+        } 
+        //excep - error
+        catch (IOException e) {
             System.out.println("Error al escribir el archivo: " + e.getMessage());
         }
     }
